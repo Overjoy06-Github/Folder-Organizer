@@ -52,6 +52,8 @@ def organizeFolder(path: str):
 
         files = os.listdir(path)
         file_extensions = [os.path.splitext(file)[1] for file in files]
+        file_extensions = [item for item in file_extensions if item.strip()]
+        print(file_extensions)
         organization = {
             ".jpg": "Images",
             ".png": "Images",
