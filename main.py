@@ -16,7 +16,10 @@ def button_event():
 
 def selectfile():
     filename = filedialog.askdirectory()
-    organizeFolder(filename)
+    if filename:
+        textbox.delete(0, END)
+        textbox.insert(0, filename)
+        organizeFolder(filename)
 
 
 app = CTk()
@@ -53,7 +56,6 @@ def organizeFolder(path: str):
         files = os.listdir(path)
         file_extensions = [os.path.splitext(file)[1] for file in files]
         file_extensions = [item for item in file_extensions if item.strip()]
-        print(file_extensions)
         organization = {
             ".jpg": "Images",
             ".png": "Images",
@@ -67,36 +69,26 @@ def organizeFolder(path: str):
             ".m4a": "Audio"
         }
 
-        for i in range(len(file_extensions)):
-            if file_extensions[i] == "":
+        for i, file in enumerate(files):
+            file_ext = os.path.splitext(file)[1].lower()
+            if file_ext == "":
                 continue
-            if file_extensions[i] in organization:
-                try:
-                    if os.path.isdir(path+organization[file_extensions[i]]):
-                        shutil.move(path+files[i], path+organization[file_extensions[i]])
-                        insert_text(f"Successfully moved: {path+files[i]} TO {path+organization[file_extensions[i]]}\n")
-                    else:
-                        if os.path.isdir(path+organization[file_extensions[i]]) == False:
-                            os.makedirs(path+organization[file_extensions[i]])
-                            shutil.move(path+files[i], path+organization[file_extensions[i]])
-                            insert_text(f"Successfully moved: {path+files[i]} TO {path+organization[file_extensions[i]]}\n")
-                        else:
-                            shutil.move(path+files[i], path+organization[file_extensions[i]])
-                            insert_text(f"Successfully moved: {path+files[i]} TO {path+organization[file_extensions[i]]}\n")
-                except Exception as e:
-                    insert_text(f"Error: {e}\n")
-            else:
-                if file_extensions[i] == "":
-                    continue
-                elif os.path.isdir(path+"Miscellaneous") == False:
-                    os.makedirs(path+"Miscellaneous")
-                    shutil.move(path+files[i], path+"Miscellaneous")
-                    insert_text(f"Successfully moved: {path+files[i]} TO {path+'Miscellaneous'}\n")
-                else:
-                    shutil.move(path+files[i], path+"Miscellaneous")
-                    insert_text(f"Successfully moved: {path+files[i]} TO {path+'Miscellaneous'}\n")
-            insert_text(f"Finished {i+1}/{len(file_extensions)}\n")
 
+            dest_folder = organization.get(file_ext, "Miscellaneous")
+            dest_path = os.path.join(path, dest_folder)
+
+            if not os.path.isdir(dest_path):
+                os.makedirs(dest_path)
+
+            try:
+                shutil.move(os.path.join(path, file), dest_path)
+                insert_text(f"Moved: {file} -> {dest_folder}\n")
+            except Exception as e:
+                insert_text(f"Error moving {file}: {e}\n")
+
+            insert_text(f"Finished {i + 1}/{len(files)}\n")
+
+        insert_text("Organization complete!\n")
     except IndexError:
         insert_text("Empty Input!\n")
 
