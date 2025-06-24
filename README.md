@@ -17,9 +17,12 @@ To deploy this project, execute the `run.bat` file.
 This project requires:
 
 - `customtkinter`
+- `darkdetect`
+- `packaging`
 - `shutil` (standard library)
 - `os` (standard library)
 
 👉 You can install customtkinter with:
 ```bash
-pip install customtkinter
+pip install -r requirements.txt
+```
