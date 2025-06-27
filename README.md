@@ -22,7 +22,7 @@ This project requires:
 - `shutil` (standard library)
 - `os` (standard library)
 
-👉 You can install customtkinter with:
+👉 You can install the dependencies with:
 ```bash
 pip install -r requirements.txt
 ```
